@@ -1,9 +1,12 @@
 const express = require("express");
-
+const zod = require("zod")
 const app = express();
+
+const schema = zod.array(zod.number())
 
 let totalResponseTime = 0;
 let requestCount = 0;
+let errorCount = 0;
 
 function calculateRequests(req, res, next) {
     console.log(++requestCount);
@@ -57,8 +60,29 @@ app.get("/health-checkup", userMiddleware, kidneyMiddleware, function(req, res){
 
 app.use(express.json())
 
-app.post("/health-checkup", userMiddleware, kidneyMiddleware, function(req, res){
-    res.send(req.body)
+app.post("/health-checkup", function(req, res){
+    // kidneys = [1, 2]
+    const kidneys = req.body.kidneys;
+    const response = schema.safeParse(kidneys)
+
+    if(!response.success) {
+        res.status(411).json({
+            msg: "input is invalid"
+        })
+    }
+
+    const kidneyLength = kidneys.length;
+    res.send(response).json({
+        msg: `"You have" ${kidneyLength} + " kidneys"`
+            })
+})
+
+// global catches
+app.use(function(err, req, res, next) {
+    errorCount++;
+    res.json({
+        msg: "sorry something is up with our server"
+    })
 })
 
 app.listen(3000, () => {
