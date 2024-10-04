@@ -72,9 +72,7 @@ app.post("/health-checkup", function(req, res){
     }
 
     const kidneyLength = kidneys.length;
-    res.send(response).json({
-        msg: `"You have" ${kidneyLength} + " kidneys"`
-            })
+    res.send(response);
 })
 
 // global catches
