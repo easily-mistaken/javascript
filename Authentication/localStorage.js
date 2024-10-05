@@ -1,19 +1,38 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
-const mongoose = require("mongoose")
 const jwtPassword = "123456";
-
-// mongoose.connect(
-//     //mongoURL
-// )
 
 const app = express();
 app.use(express.json());
 
+const ALL_USERS = [
+    {
+        username: "prajjwal@gmail.com",
+        password: "123",
+        name: "prajjwal choubey"
+    },
+    {
+        username: "nishant@gmail.com",
+        password: "123321",
+        name: "nishant singh"
+    },
+    {
+        username: "atul@gmail.com",
+        password: "12345",
+        name: "atul kumar"
+    },
+];
 
 function userExists(username, password) {
-    // should check in the database
-    
+    // write logic to return true or false if this user exits
+    // in ALL_USERS array
+    let userExists = false;
+    for (let i = 0; i<ALL_USERS.length; i++) {
+        if (ALL_USERS[i].username == username && ALL_USERS[i].password == password) {
+            userExists = true;
+        }
+    }
+    return userExists;
 }
 
 app.post("/signin", function(req, res) {
